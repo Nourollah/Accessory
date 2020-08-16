@@ -133,6 +133,7 @@ int AOA::connect(int retry)
     libusb_claim_interface(handle, 0);
     usleep(1000);//sometimes hangs on the next transfer :(
 
+    //create register
     libusb_control_transfer(handle,0xC0,51,0,0,ioBuffer,2,10000);
 
     // Send accessory identifications
