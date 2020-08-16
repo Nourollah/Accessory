@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:origin/master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="Accessory" targetName="Accessory" />
@@ -11,7 +36,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="faa45f09-468c-4e2a-b354-0ddcfed58714" name="Default Changelist" comment="" />
+    <list default="true" id="faa45f09-468c-4e2a-b354-0ddcfed58714" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/Accessory.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AOA/AOA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AOA/AOA.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AOA/AOA.h" beforeDir="false" afterPath="$PROJECT_DIR$/AOA/AOA.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AdkEcho.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AdkEcho.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Accessory" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Accessory" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,9 +65,12 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="OCFindUsagesOptions.isSearchForTextOccurrences" value="false" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/CMakeLists.txt" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -41,7 +78,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -67,8 +104,18 @@
       <updated>1597488311757</updated>
       <workItem from="1597488322322" duration="8378000" />
       <workItem from="1597498092216" duration="10000" />
-      <workItem from="1597551109736" duration="8148000" />
+      <workItem from="1597551109736" duration="22610000" />
+      <workItem from="1597576828232" duration="457000" />
+      <workItem from="1597577330305" duration="2742000" />
     </task>
+    <task id="LOCAL-00001" summary="Init Commit">
+      <created>1597560006255</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1597560006255</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -79,67 +126,118 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Init Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Init Commit" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="423" height="506" key="DebuggerActiveHint" timestamp="1597555282243">
+    <state x="2339" y="216" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597577420573">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="423" height="506" key="DebuggerActiveHint/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597555282243" />
-    <state width="1874" height="341" key="GridCell.Tab.0.bottom" timestamp="1597558648710">
+    <state x="2339" y="216" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597577420573" />
+    <state width="442" height="506" key="DebuggerActiveHint" timestamp="1597565091638">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558648710" />
-    <state width="1874" height="341" key="GridCell.Tab.0.center" timestamp="1597558648710">
+    <state width="442" height="506" key="DebuggerActiveHint/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597565091638" />
+    <state width="1874" height="341" key="GridCell.Tab.0.bottom" timestamp="1597580073340">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.0.center/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558648710" />
-    <state width="1874" height="341" key="GridCell.Tab.0.left" timestamp="1597558648710">
+    <state width="1874" height="341" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580073340" />
+    <state width="1874" height="341" key="GridCell.Tab.0.center" timestamp="1597580073340">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.0.left/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558648710" />
-    <state width="1874" height="341" key="GridCell.Tab.0.right" timestamp="1597558648710">
+    <state width="1874" height="341" key="GridCell.Tab.0.center/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580073340" />
+    <state width="1874" height="341" key="GridCell.Tab.0.left" timestamp="1597580073340">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.0.right/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558648710" />
-    <state width="1874" height="341" key="GridCell.Tab.1.bottom" timestamp="1597558648710">
+    <state width="1874" height="341" key="GridCell.Tab.0.left/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580073340" />
+    <state width="1874" height="341" key="GridCell.Tab.0.right" timestamp="1597580073340">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558648710" />
-    <state width="1874" height="341" key="GridCell.Tab.1.center" timestamp="1597558648710">
+    <state width="1874" height="341" key="GridCell.Tab.0.right/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580073340" />
+    <state width="1874" height="341" key="GridCell.Tab.1.bottom" timestamp="1597580073340">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.1.center/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558648710" />
-    <state width="1874" height="341" key="GridCell.Tab.1.left" timestamp="1597558648710">
+    <state width="1874" height="341" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580073340" />
+    <state width="1874" height="341" key="GridCell.Tab.1.center" timestamp="1597580073340">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.1.left/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558648710" />
-    <state width="1874" height="341" key="GridCell.Tab.1.right" timestamp="1597558648710">
+    <state width="1874" height="341" key="GridCell.Tab.1.center/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580073340" />
+    <state width="1874" height="341" key="GridCell.Tab.1.left" timestamp="1597580073340">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.1.right/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558648710" />
-    <state x="2377" y="193" key="SettingsEditor" timestamp="1597489161647">
+    <state width="1874" height="341" key="GridCell.Tab.1.left/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580073340" />
+    <state width="1874" height="341" key="GridCell.Tab.1.right" timestamp="1597580073340">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2377" y="193" key="SettingsEditor/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597489161647" />
+    <state width="1874" height="341" key="GridCell.Tab.1.right/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580073340" />
+    <state x="2661" y="241" key="RollbackChangesDialog" timestamp="1597577384838">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2661" y="241" key="RollbackChangesDialog/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597577384838" />
+    <state x="2377" y="193" key="SettingsEditor" timestamp="1597564747651">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2377" y="193" key="SettingsEditor/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597564747651" />
+    <state x="2476" y="294" key="Vcs.Push.Dialog.v2" timestamp="1597560299722">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2476" y="294" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597560299722" />
     <state x="2491" y="171" width="416" height="723" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1597558396408">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2491" y="171" width="416" height="723" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597558396408" />
+    <state x="0" y="38" width="1882" height="1006" maximized="true" key="dock-window-1" timestamp="1597578278813">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state x="0" y="38" width="1882" height="1006" maximized="true" key="dock-window-1/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597578278813" />
+    <state x="620" y="246" key="run.anything.popup" timestamp="1597579586042">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state x="620" y="246" key="run.anything.popup/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597579586042" />
     <state x="2540" y="204" width="670" height="676" key="search.everywhere.popup" timestamp="1597495408516">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2540" y="204" width="670" height="676" key="search.everywhere.popup/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597495408516" />
   </component>
   <component name="XDebuggerManager">
-    <watches-manager>
-      <configuration name="CMakeRunConfiguration">
-        <watch expression="callback_handle" />
-      </configuration>
-    </watches-manager>
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/AOA/AOA.cpp</url>
+          <line>134</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/AOA/AOA.cpp</url>
+          <line>137</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/AOA/AOA.cpp</url>
+          <line>146</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -58,6 +58,6 @@ public:
     int readAsync(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeout);
     int handleAsync(struct timeval* tv);
     int write(unsigned char *buf, int len, unsigned int timeout);
-    int hotplug_callback(struct libusb_context *ctx, struct libusb_device *dev, libusb_hotplug_event event, void *user_data);
+    int sendAudio();
 };
 #endif /* __AOA_h__ */

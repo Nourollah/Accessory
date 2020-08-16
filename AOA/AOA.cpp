@@ -31,6 +31,7 @@
 #define USB_AUDIO_ADB_PRODUCT_ID            0x2D03
 #define USB_ACCESSORY_AUDIO_PRODUCT_ID      0x2D04
 #define USB_ACCESSORY_AUDIO_ADB_PRODUCT_ID  0x2D05
+
 #define ACCESSORY_PID                       0x2D01
 #define ACCESSORY_PID_ALT                   0x2D00
 
@@ -49,6 +50,8 @@
 #define EP_COMMAND    (2 | LIBUSB_ENDPOINT_OUT) // OUT of PC to USB-device //DEVICE_SPECIFIC
 #define EP_RESPONSE   (4 | LIBUSB_ENDPOINT_IN ) // IN  PC from  USB-device //DEVICE_SPECIFIC
 
+#define IN 0x85
+#define OUT 0x07
 
 
 AOA::AOA(const char *manufacturer,
@@ -108,7 +111,7 @@ int AOA::connect(int retry)
     }
     unsigned char ioBuffer[2];
     int protocol;
-    int res,response;
+    int res;
     int tries = retry;
     uint16_t idVendor, idProduct;
 
@@ -130,6 +133,7 @@ int AOA::connect(int retry)
     libusb_claim_interface(handle, 0);
     usleep(1000);//sometimes hangs on the next transfer :(
 
+    libusb_control_transfer(handle,0xC0,51,0,0,ioBuffer,2,10000);
 
     // Send accessory identifications
     sendString(ACCESSORY_STRING_MANUFACTURER, (char*)manufacturer);
@@ -139,11 +143,11 @@ int AOA::connect(int retry)
     sendString(ACCESSORY_STRING_URI, (char*)uri);
     sendString(ACCESSORY_STRING_SERIAL, (char*)serial);
 
-    //LOGD("Accessory Identification sent");
     // Switch to accessory mode
-    res = libusb_control_transfer(handle,LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR,ACCESSORY_START,0,0,NULL,0,0);
+    res = libusb_control_transfer(handle,0x40,ACCESSORY_START,0,0,ioBuffer,0,10000);  //LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR
     if(res < 0){
         libusb_close(handle);
+        printf("bad request");
         handle = NULL;
         return -2;
     }
@@ -299,7 +303,7 @@ int AOA::getProtocol()
 int AOA::sendString(int index, const char *str)
 {
     int res;
-    res = libusb_control_transfer(handle, LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR, ACCESSORY_SEND_STRING, 0, index, (unsigned char*)str, strlen(str) + 1, 1000);
+    res = libusb_control_transfer(handle, 0x40 , ACCESSORY_SEND_STRING, 0, index, (unsigned char*)str, strlen(str) + 1, 10000);
     return(res);
 }
 
@@ -435,4 +439,21 @@ int AOA::findEndPoint(libusb_device *dev)
     }else{
         return 0;
     }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// sendAudio() -  find end point number
+///////////////////////////////////////////////////////////////////////////////
+//argument
+//
+//
+//return
+//  0 : Success
+// -1 : Valid end point not found
+//
+
+int AOA::sendAudio()
+{
+
 }
