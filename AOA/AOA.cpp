@@ -131,10 +131,10 @@ int AOA::connect(int retry)
 
     handle = libusb_open_device_with_vid_pid(ctx, idVendor, idProduct);
     libusb_claim_interface(handle, 0);
-    usleep(1000);//sometimes hangs on the next transfer :(
+    usleep(2000);//sometimes hangs on the next transfer :(
 
     //create register
-    libusb_control_transfer(handle,0xC0,51,0,0,ioBuffer,2,10000);
+    libusb_control_transfer(handle,0xC0,51,0,0,ioBuffer,2,2000);
 
     // Send accessory identifications
     sendString(ACCESSORY_STRING_MANUFACTURER, (char*)manufacturer);
@@ -145,21 +145,21 @@ int AOA::connect(int retry)
     sendString(ACCESSORY_STRING_SERIAL, (char*)serial);
 
     // Switch to accessory mode
-    res = libusb_control_transfer(handle,0x40,ACCESSORY_START,0,0,ioBuffer,0,10000);  //LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR
+    res = libusb_control_transfer(handle,0x40,ACCESSORY_START,0,0,ioBuffer,0,2000);  //LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR
     if(res < 0){
         libusb_close(handle);
         printf("bad request");
         handle = NULL;
         return -2;
     }
-
+    sleep(2);
     if(handle != NULL){
         libusb_close(handle);
         handle = NULL;
     }
 
     // Wait a moment
-    usleep(10000);
+    usleep(1000);
 
     printf("connect to new PID...\n");
     //attempt to connect to new PID, if that doesn't work try ACCESSORY_PID_ALT
@@ -261,7 +261,7 @@ int AOA::handleAsync(struct timeval* tv) {
 int AOA::write(unsigned char *buf, int len, unsigned int timeout)
 {
    int xferred;
-   int res = libusb_bulk_transfer(handle, outEP, buf, len, &xferred, timeout);
+   int res = libusb_bulk_transfer(handle, 2, buf, len, &xferred, timeout);
    if(res == 0) res = xferred;
    return(res);
 }
@@ -304,7 +304,7 @@ int AOA::getProtocol()
 int AOA::sendString(int index, const char *str)
 {
     int res;
-    res = libusb_control_transfer(handle, 0x40 , ACCESSORY_SEND_STRING, 0, index, (unsigned char*)str, strlen(str) + 1, 10000);
+    res = libusb_control_transfer(handle, 0x40 , ACCESSORY_SEND_STRING, 0, index, (unsigned char*)str, strlen(str) + 1, 2000);
     return(res);
 }
 

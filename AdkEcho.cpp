@@ -54,25 +54,27 @@ int main(int argc, char *argv[])
     printf("\ngo next step: send audio\n");
 
     // send auido over usb
-    FILE *audio;
+    /*FILE *audio;
     audio = fopen("$HOME/Downloads/audio.mp3","r");
-    unsigned char* audio_buf = (unsigned char*)malloc(8192);
+    unsigned char* audio_buf = (unsigned char*)malloc(sizeof(audio));
     fread(audio_buf, sizeof(char), sizeof(*audio), audio);
     acc.write(audio_buf,sizeof(audio_buf),1000);
-    printf("\nAudio sended\n");
+    printf("\nAudio sended\n");*/
 
 
     // Echo back.
-    /*while (1) {
+    while (1) {
         int len = acc.read(buff, sizeof(buff), 1000000);
         if (len < 0) error((char*)"acc.read",len);
         buff[len+1] = '\0';
         printf("USB>%s\n", buff);
         // for (int i=0; i<len; i++) buff[i] = buff[i] - 0x20;
         acc.write(buff, len, 1000);
-    }*/
+    }
 
     acc.disconnect();
 
+
+    return 0;
 
 }
