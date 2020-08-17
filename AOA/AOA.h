@@ -52,7 +52,7 @@ public:
     int connect(int);
     void disconnect();
     int read(unsigned char *buf, int len, unsigned int timeout);
-    int read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeout);
+    int read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut);
     int handle_async(struct timeval* tv);
     int write(unsigned char *buf, int len, unsigned int timeout);
 };

@@ -89,7 +89,7 @@ void AOA::disconnect()
  * connect() - connect to AOA device
  *
  * argument:
- *         none
+ *         retry: Retry times for connect to new PID
  *
  * return:
  *       0 : connection success
@@ -211,17 +211,20 @@ int AOA::read(unsigned char *buf, int len, unsigned int timeout)
  * argument:
  *         callback: callback function.
  *         buffer: Buffer content data for read
+ *         bufferLen: Length of data buffer
+ *         userData: User data to pass to callback function
+ *         timeOut: Timeout for the transfer in milliseconds
+ *
  *         void function(struct libusb_transfer *transfer)
  *
  * return:
  *       <0 : LIBUSB_ERROR_NO_DEVICE if the device has been disconnected and a LIBUSB_ERROR code on other failure.
  *       =0 : Succes
  */
-int AOA::read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeout)
+int AOA::read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut)
 {
-   libusb_fill_bulk_transfer( inTransfer, handle, inEP, // EP_RESPONSE, 
-         (uint8_t*)buffer, bufferLen,
-         callback, userData, timeout);
+   libusb_fill_bulk_transfer(inTransfer, handle, inEP, // EP_RESPONSE,
+         (uint8_t*)buffer, bufferLen,callback, userData, timeOut);
    inTransfer->type = LIBUSB_TRANSFER_TYPE_BULK;
    int result = libusb_submit_transfer(inTransfer);
    return result;
