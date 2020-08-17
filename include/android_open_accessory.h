@@ -35,14 +35,8 @@ private:
 
 public:
     android_open_accessory
-    (
-        const char *manufacturer,
-        const char *model,
-        const char *description,
-        const char *version,
-        const char *uri,
-        const char *serial
-    );
+    (const char *manufacturer, const char *model, const char *description, const char *version, const char *uri, const char *serial);
+
     ~android_open_accessory();
     int connect(int);
     void disconnect();

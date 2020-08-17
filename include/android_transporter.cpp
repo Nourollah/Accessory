@@ -4,7 +4,7 @@
 
 #include "android_transporter.h"
 #include <cstring>
-#include <cstdio>
+#include <pthread.h>
 
 
 #define USB_ACCESSORY_VENDOR_ID             0x18D1
@@ -40,8 +40,6 @@
 #define OUT 0x07
 
 
-
-
 // **************************************************************************************************************** //
 /**
  * read() - read data from accessory device
@@ -55,7 +53,7 @@
  *       <0 : Error (libusb_bulk_transfer error code)
  *       >=0 : Succes(received bytes)
  */
-int android_transporter::read(unsigned char *buf, int len, unsigned int timeout)
+int android_transporter::read(unsigned char *buf, int len, unsigned int timeout, pthread_t readThread)
 {
     int xferred;
     int res = libusb_bulk_transfer(handle, inEP, buf, len, &xferred, timeout);
@@ -80,7 +78,7 @@ int android_transporter::read(unsigned char *buf, int len, unsigned int timeout)
  *       <0 : LIBUSB_ERROR_NO_DEVICE if the device has been disconnected and a LIBUSB_ERROR code on other failure.
  *       =0 : Succes
  */
-int android_transporter::read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut)
+int android_transporter::read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut, pthread_t readThread)
 {
     libusb_fill_bulk_transfer(inTransfer, handle, inEP, /* EP_RESPONSE */ (uint8_t*)buffer, bufferLen, callback, userData, timeOut);
     inTransfer->type = LIBUSB_TRANSFER_TYPE_BULK;
@@ -116,7 +114,7 @@ int android_transporter::handle_async(struct timeval* tv) {
  *       <0 : Error (libusb_bulk_transfer error code)
  *       >=0 : Succes(received bytes)
  */
-int android_transporter::write(unsigned char *buf, int len, unsigned int timeout)
+int android_transporter::write(unsigned char *buf, int len, unsigned int timeout, pthread_t writeThread)
 {
     int xferred;
     int res = libusb_bulk_transfer(handle, outEP, buf, len, &xferred, timeout);
@@ -160,7 +158,7 @@ int android_transporter::send_string(int index, const char *str)
  *       <0 : LIBUSB_ERROR_NO_DEVICE if the device has been disconnected and a LIBUSB_ERROR code on other failure.
  *       =0 : Succes
  */
-int android_transporter::write_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut)
+int android_transporter::write_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut, pthread_t writeThread)
 {
     libusb_fill_bulk_transfer(inTransfer, handle, outEP, /* EP_RESPONSE */ (uint8_t*)buffer, bufferLen, callback, userData, timeOut);
     inTransfer->type = LIBUSB_TRANSFER_TYPE_BULK;

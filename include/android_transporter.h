@@ -19,17 +19,20 @@ private:
     int verProtocol;
     libusb_transfer* inTransfer;
     char versionString[15]; // Bigger than 10, just in case
+    pthread_t readThread;
+    pthread_t writeThread;
+    int ThreadRunner;
 
 public:
 
     android_transporter();
     ~android_transporter();
 
-    int read(unsigned char *buf, int len, unsigned int timeout);
-    int read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut);
+    int read(unsigned char *buf, int len, unsigned int timeout, pthread_t readThread);
+    int read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut, pthread_t readThread);
+    int write(unsigned char *buf, int len, unsigned int timeout, pthread_t writeThread);
+    int write_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut, pthread_t writeThread);
     int handle_async(struct timeval* tv);
-    int write(unsigned char *buf, int len, unsigned int timeout);
-    int write_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut);
     int send_string(int index, const char *str);
 
 };
