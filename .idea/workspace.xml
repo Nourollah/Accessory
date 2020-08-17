@@ -37,7 +37,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="faa45f09-468c-4e2a-b354-0ddcfed58714" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AOA/AOA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AOA/AOA.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AOA/AOA.h" beforeDir="false" afterPath="$PROJECT_DIR$/AOA/AOA.h" afterDir="false" />
     </list>
@@ -103,6 +102,7 @@
       <workItem from="1597576828232" duration="457000" />
       <workItem from="1597577330305" duration="6577000" />
       <workItem from="1597637863860" duration="8678000" />
+      <workItem from="1597647732449" duration="529000" />
     </task>
     <task id="LOCAL-00001" summary="Init Commit">
       <created>1597560006255</created>
