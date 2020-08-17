@@ -54,27 +54,19 @@
 #define OUT 0x07
 
 
-AOA::AOA(const char *manufacturer,
-         const char *model,
-         const char *description,
-         const char *version,
-         const char *uri,
-         const char *serial) : manufacturer(manufacturer),
-                               model(model),
-                               description(description),
-                               version(version),
-                               uri(uri),
-                               serial(serial),
-                               handle(NULL),
-                               ctx(NULL)
+AOA::AOA
+(const char *manufacturer, const char *model, const char *description, const char *version, const char *uri, const char *serial):
+ manufacturer(manufacturer), model(model), description(description), version(version), uri(uri), serial(serial), handle(NULL), contex(NULL)
 {
     inTransfer = libusb_alloc_transfer(0);
 }
 
 
-AOA::~AOA() {
+AOA::~AOA()
+{
     this->disconnect();
-    if( inTransfer != NULL ){
+    if( inTransfer != NULL )
+    {
        libusb_free_transfer(inTransfer);
     }
 }
@@ -86,26 +78,28 @@ void AOA::disconnect()
         libusb_close(handle);
 	handle = NULL;
     }
-    if( ctx != NULL ){
-       libusb_exit(ctx);
-       ctx = NULL;
+    if(contex != NULL ){
+       libusb_exit(contex);
+        contex = NULL;
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// connect() - connect to AOA device
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// none
-//return
-//  0 : connection success
-// -1 : connection failed.(AOA device not found)
-// -2 : connection failed.(Accessory mode switch failed)
-// -3 : connection failed.(libusb_claim_interface failed)
-//
+// **************************************************************************************************************** //
+/**
+ * connect() - connect to AOA device
+ *
+ * argument:
+ *         none
+ *
+ * return:
+ *       0 : connection success
+ *       -1 : connection failed.(AOA device not found)
+ *       -2 : connection failed.(Accessory mode switch failed)
+ *       -3 : connection failed.(libusb_claim_interface failed)
+ */
 int AOA::connect(int retry)
 {
-    if(libusb_init(&ctx) < 0){
+    if(libusb_init(&contex) < 0){
        printf("libusb_init failed\n");
        return 1;
     }
@@ -116,36 +110,36 @@ int AOA::connect(int retry)
     uint16_t idVendor, idProduct;
 
     // Search for AOA support device in the all USB devices
-    if ((protocol=searchDevice(ctx, &idVendor, &idProduct)) < 0) {
+    if ((protocol= search_device(contex, &idVendor, &idProduct)) < 0) {
         printf("AOA device not found.\n");
         return -1;
     }
 
-    //already in accessory mode ?
+    // Already in accessory mode ?
     if( protocol == 0 ) {
-       handle = libusb_open_device_with_vid_pid(ctx, idVendor, idProduct);
+       handle = libusb_open_device_with_vid_pid(contex, idVendor, idProduct);
        libusb_claim_interface(handle, 0);
        return 0;
     }
     verProtocol = protocol;
 
-    handle = libusb_open_device_with_vid_pid(ctx, idVendor, idProduct);
+    handle = libusb_open_device_with_vid_pid(contex, idVendor, idProduct);
     libusb_claim_interface(handle, 0);
     usleep(2000);//sometimes hangs on the next transfer :(
 
-    //create register
+    // Create register
     libusb_control_transfer(handle,0xC0,51,0,0,ioBuffer,2,2000);
 
     // Send accessory identifications
-    sendString(ACCESSORY_STRING_MANUFACTURER, (char*)manufacturer);
-    sendString(ACCESSORY_STRING_MODEL, (char*)model);
-    sendString(ACCESSORY_STRING_DESCRIPTION, (char*)description);
-    sendString(ACCESSORY_STRING_VERSION, (char*)version);
-    sendString(ACCESSORY_STRING_URI, (char*)uri);
-    sendString(ACCESSORY_STRING_SERIAL, (char*)serial);
+    send_string(ACCESSORY_STRING_MANUFACTURER, (char *) manufacturer);
+    send_string(ACCESSORY_STRING_MODEL, (char *) model);
+    send_string(ACCESSORY_STRING_DESCRIPTION, (char *) description);
+    send_string(ACCESSORY_STRING_VERSION, (char *) version);
+    send_string(ACCESSORY_STRING_URI, (char *) uri);
+    send_string(ACCESSORY_STRING_SERIAL, (char *) serial);
 
     // Switch to accessory mode
-    res = libusb_control_transfer(handle,0x40,ACCESSORY_START,0,0,ioBuffer,0,2000);  //LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR
+    res = libusb_control_transfer(handle,0x40,ACCESSORY_START,0,0,ioBuffer,0,2000);
     if(res < 0){
         libusb_close(handle);
         printf("bad request");
@@ -162,14 +156,14 @@ int AOA::connect(int retry)
     usleep(1000);
 
     printf("connect to new PID...\n");
-    //attempt to connect to new PID, if that doesn't work try ACCESSORY_PID_ALT
+    // Attempt to connect to new PID, if that doesn't work try ACCESSORY_PID_ALT
     for(;;){
         tries--;
-        if(searchDevice(ctx, &idVendor, &idProduct) != 0 ){
+        if(search_device(contex, &idVendor, &idProduct) != 0 ){
             sleep(1);
             continue;
         }
-        if((handle = libusb_open_device_with_vid_pid(ctx, idVendor, idProduct)) == NULL){
+        if((handle = libusb_open_device_with_vid_pid(contex, idVendor, idProduct)) == NULL){
             if(tries < 0){
                 return -1;
             }
@@ -189,18 +183,19 @@ int AOA::connect(int retry)
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-// read() - read data from accessory device
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// buf     : data buffer
-// len     : data length
-// timeout : wait time(ms)
-//
-//return
-//  <0 : Error (libusb_bulk_transfer error code)
-// >=0 : Succes(received bytes)
-//
+// **************************************************************************************************************** //
+/**
+ * read() - read data from accessory device
+ *
+ * argument:
+ *         buf     : data buffer
+ *         len     : data length
+ *         timeout : wait time(ms)
+ *
+ * return:
+ *       <0 : Error (libusb_bulk_transfer error code)
+ *       >=0 : Succes(received bytes)
+ */
 int AOA::read(unsigned char *buf, int len, unsigned int timeout)
 {
    int xferred;
@@ -209,19 +204,20 @@ int AOA::read(unsigned char *buf, int len, unsigned int timeout)
    return(res);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// readAsync() - read async data from accessory device
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// callback : callback function.
-//	void function(struct libusb_transfer *transfer)
-//return
-//  <0 : LIBUSB_ERROR_NO_DEVICE if the device has been disconnected and a
-//       LIBUSB_ERROR code on other failure.
-//  =0 : Succes
-//
-int AOA::readAsync(libusb_transfer_cb_fn callback, char* buffer, 
-	int bufferLen, void* userData, unsigned int timeout)
+// **************************************************************************************************************** //
+/**
+ * handle_async() - read async data from accessory device
+ *
+ * argument:
+ *         callback: callback function.
+ *         buffer: Buffer content data for read
+ *         void function(struct libusb_transfer *transfer)
+ *
+ * return:
+ *       <0 : LIBUSB_ERROR_NO_DEVICE if the device has been disconnected and a LIBUSB_ERROR code on other failure.
+ *       =0 : Succes
+ */
+int AOA::read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeout)
 {
    libusb_fill_bulk_transfer( inTransfer, handle, inEP, // EP_RESPONSE, 
          (uint8_t*)buffer, bufferLen,
@@ -231,33 +227,35 @@ int AOA::readAsync(libusb_transfer_cb_fn callback, char* buffer,
    return result;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// handleAsync() - read async data from accessory device
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// tv : timeout value.
-//
-//return
-//  <0 : ERROR
-//  =0 : Succes
-//
-int AOA::handleAsync(struct timeval* tv) {
-   return libusb_handle_events_timeout(ctx, tv);
+// **************************************************************************************************************** //
+/**
+ * handle_async() - read async data from accessory device
+ *
+ * argument:
+ *         tv : timeout value.
+ *
+ * return:
+ *       <0 : ERROR
+ *       =0 : Succes
+ */
+int AOA::handle_async(struct timeval* tv) {
+   return libusb_handle_events_timeout(contex, tv);
 } 
 
 
-///////////////////////////////////////////////////////////////////////////////
-// write() - write data to accessory device
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// *buf    : data buffer
-// len     : data length
-// timeout : wait time(ms)
-//
-//return
-//  <0 : Error (libusb_bulk_transfer error code)
-// >=0 : Succes(received bytes)
-//
+// **************************************************************************************************************** //
+/**
+ * write() - write data to accessory device
+ *
+ * argument:
+ *         *buf    : data buffer
+ *         len     : data length
+ *         timeout : wait time(ms)
+ *
+ * return:
+ *       <0 : Error (libusb_bulk_transfer error code)
+ *       >=0 : Succes(received bytes)
+ */
 int AOA::write(unsigned char *buf, int len, unsigned int timeout)
 {
    int xferred;
@@ -266,17 +264,18 @@ int AOA::write(unsigned char *buf, int len, unsigned int timeout)
    return(res);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// getProtocol() - retrieve AOA protocol version
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// none
-//
-//return
-// -1 : Error (libusb_bulk_transfer error code)
-// >0 : Protocol version
-//
-int AOA::getProtocol()
+// **************************************************************************************************************** //
+/**
+ * get_protocol() - retrieve AOA protocol version
+ *
+ * argument:
+ *         none
+ *
+ * return:
+ *       -1 : Error (libusb_bulk_transfer error code)
+ *       >0 : Protocol version
+ */
+int AOA::get_protocol()
 {
     unsigned short protocol;
     unsigned char buf[2];
@@ -290,37 +289,39 @@ int AOA::getProtocol()
     return((int)protocol);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// sendString() - send accessory identifications
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// index   : string ID
-// str     : identification string(zero terminated UTF8 string)
-//
-//return
-// <0 : Error (libusb_bulk_transfer error code)
-//  0 : Success
-//
-int AOA::sendString(int index, const char *str)
+// **************************************************************************************************************** //
+/**
+ * send_string() - send accessory identifications
+ *
+ * argument:
+ *         index   : string ID
+ *         str     : identification string(zero terminated UTF8 string)
+ *
+ * return:
+ *       <0 : Error (libusb_bulk_transfer error code)
+ *       0 : Success
+ */
+int AOA::send_string(int index, const char *str)
 {
     int res;
     res = libusb_control_transfer(handle, 0x40 , ACCESSORY_SEND_STRING, 0, index, (unsigned char*)str, strlen(str) + 1, 2000);
     return(res);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// searchDevice() -  Search for AOA support device in the all USB devices
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// ctx      : libusb_context
-// idVendor : return buffer for USB Vendor ID
-// idProduc : return buffer for USB Product ID
-//
-//return
-// -1 : AOA device not found
-// 0> : AOA Version
-//
-int AOA::searchDevice(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct)
+// **************************************************************************************************************** //
+/**
+ * search_device() -  Search for AOA support device in the all USB devices
+ *
+ * argument:
+ *         contex      : libusb_context
+ *         idVendor : return buffer for USB Vendor ID
+ *         idProduc : return buffer for USB Product ID
+ *
+ * return:
+ *       -1 : AOA device not found
+ *       0> : AOA Version
+ */
+int AOA::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct)
 {
     int res;
     int i;
@@ -366,7 +367,7 @@ int AOA::searchDevice(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProdu
                printf("Device open error.\n");
         } else {
                 libusb_claim_interface(handle, 0);
-                res = getProtocol();
+                res = get_protocol();
                 libusb_release_interface (handle, 0);
                 libusb_close(handle);
                 handle = NULL;
@@ -380,7 +381,7 @@ int AOA::searchDevice(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProdu
     }
 
     // find end point number
-    if( findEndPoint(dev) < 0 ){
+    if(find_end_Point(dev) < 0 ){
         printf("Endpoint not found.\n");
         res = -1;
     }
@@ -392,17 +393,18 @@ int AOA::searchDevice(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProdu
     return res;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// findEndPoint() -  find end point number
-///////////////////////////////////////////////////////////////////////////////
-//argument
-// dev : libusb_device
-//
-//return
-//  0 : Success
-// -1 : Valid end point not found
-//
-int AOA::findEndPoint(libusb_device *dev)
+// **************************************************************************************************************** //
+/**
+ * find_end_Point() -  find end point number
+ *
+ * argument:
+ *         dev : libusb_device
+ *
+ * return:
+ *       0 : Success
+ *       -1 : Valid end point not found
+ */
+int AOA::find_end_Point(libusb_device *dev)
 {
     struct libusb_config_descriptor *config;
     libusb_get_config_descriptor (dev, 0, &config);
@@ -442,19 +444,3 @@ int AOA::findEndPoint(libusb_device *dev)
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-// sendAudio() -  find end point number
-///////////////////////////////////////////////////////////////////////////////
-//argument
-//
-//
-//return
-//  0 : Success
-// -1 : Valid end point not found
-//
-
-int AOA::sendAudio()
-{
-
-}
