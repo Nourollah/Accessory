@@ -1,18 +1,17 @@
 // **************************************************************************************************************** //
 /**
- * Android Open Accessory implementation for libusb-1.0
+ * Android Open usb_accessory connection implementation for libusb-1.0
  */
 
 #ifndef __AOA_h__
 #define __AOA_h__
 
-#include <libusb-1.0/libusb.h>
-
+#include "android_transporter.h"
 // **************************************************************************************************************** //
 /**
- * This class presentation function to get USB Accessory mode on Android, read and write stream over USB
+ * This class presentation function to get USB usb_accessory mode on Android, read and write stream over USB
  */
-class AOA
+class android_open_accessory : protected android_transporter
 {
 private:
     const char *manufacturer;
@@ -29,16 +28,13 @@ private:
     int verProtocol;
 
     libusb_transfer* inTransfer;
-    char versionString[15]; // Bigger than 10, just in case
 
     int search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct);
     int find_end_Point(libusb_device *dev);
-    int is_accessory_device (libusb_context *ctx);
     int get_protocol();
-    int send_string(int index, const char *str);
 
 public:
-    AOA
+    android_open_accessory
     (
         const char *manufacturer,
         const char *model,
@@ -47,13 +43,14 @@ public:
         const char *uri,
         const char *serial
     );
-    ~AOA();
+    ~android_open_accessory();
     int connect(int);
     void disconnect();
-    int read(unsigned char *buf, int len, unsigned int timeout);
-    int read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut);
-    int handle_async(struct timeval* tv);
-    int write(unsigned char *buf, int len, unsigned int timeout);
+    int register_accessory(unsigned char ioBuffer[2]);
+    void unregister_accessory(libusb_device_handle *handle);
+    int hid_register(unsigned char data[7]); //human interface device
+    int hid_unregister();
+
 };
 
 

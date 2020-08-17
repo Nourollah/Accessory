@@ -1,7 +1,8 @@
-#include "AOA.h"
-#include <stdio.h>
-#include <string.h>
+#include "android_open_accessory.h"
+#include <cstdio>
+#include <cstring>
 #include <unistd.h>
+#include <pthread.h>
 
 
 #define USB_ACCESSORY_VENDOR_ID             0x18D1
@@ -25,6 +26,9 @@
 #define ACCESSORY_STRING_URI                4
 #define ACCESSORY_STRING_SERIAL             5
 
+#define WEIGH_REPORT_SIZE                   7
+
+
 #define ACCESSORY_GET_PROTOCOL              51
 #define ACCESSORY_SEND_STRING               52
 #define ACCESSORY_START                     53
@@ -37,7 +41,7 @@
 #define OUT 0x07
 
 
-AOA::AOA
+android_open_accessory::android_open_accessory
 (const char *manufacturer, const char *model, const char *description, const char *version, const char *uri, const char *serial):
  manufacturer(manufacturer), model(model), description(description), version(version), uri(uri), serial(serial), handle(NULL), contex(NULL)
 {
@@ -45,7 +49,7 @@ AOA::AOA
 }
 
 
-AOA::~AOA()
+android_open_accessory::~android_open_accessory()
 {
     this->disconnect();
     if( inTransfer != NULL )
@@ -54,7 +58,8 @@ AOA::~AOA()
     }
 }
 
-void AOA::disconnect()
+
+void android_open_accessory::disconnect()
 {
     if(handle != NULL ){
         libusb_release_interface (handle, 0);
@@ -69,18 +74,18 @@ void AOA::disconnect()
 
 // **************************************************************************************************************** //
 /**
- * connect() - connect to AOA device
+ * connect() - connect to android_open_accessory device
  *
  * argument:
  *         retry: Retry times for connect to new PID
  *
  * return:
  *       0 : connection success
- *       -1 : connection failed.(AOA device not found)
- *       -2 : connection failed.(Accessory mode switch failed)
+ *       -1 : connection failed.(android_open_accessory device not found)
+ *       -2 : connection failed.(usb_accessory mode switch failed)
  *       -3 : connection failed.(libusb_claim_interface failed)
  */
-int AOA::connect(int retry)
+int android_open_accessory::connect(int retry)
 {
     if(libusb_init(&contex) < 0){
        printf("libusb_init failed\n");
@@ -92,9 +97,9 @@ int AOA::connect(int retry)
     int tries = retry;
     uint16_t idVendor, idProduct;
 
-    // Search for AOA support device in the all USB devices
+    // Search for android_open_accessory support device in the all USB devices
     if ((protocol= search_device(contex, &idVendor, &idProduct)) < 0) {
-        printf("AOA device not found.\n");
+        printf("android_open_accessory device not found.\n");
         return -1;
     }
 
@@ -110,29 +115,11 @@ int AOA::connect(int retry)
     libusb_claim_interface(handle, 0);
     usleep(2000);//sometimes hangs on the next transfer :(
 
-    // Create register
-    libusb_control_transfer(handle,0xC0,51,0,0,ioBuffer,2,2000);
-
-    // Send accessory identifications
-    send_string(ACCESSORY_STRING_MANUFACTURER, (char *) manufacturer);
-    send_string(ACCESSORY_STRING_MODEL, (char *) model);
-    send_string(ACCESSORY_STRING_DESCRIPTION, (char *) description);
-    send_string(ACCESSORY_STRING_VERSION, (char *) version);
-    send_string(ACCESSORY_STRING_URI, (char *) uri);
-    send_string(ACCESSORY_STRING_SERIAL, (char *) serial);
-
-    // Switch to accessory mode
-    res = libusb_control_transfer(handle,0x40,ACCESSORY_START,0,0,ioBuffer,0,2000);
-    if(res < 0){
-        libusb_close(handle);
-        printf("bad request");
-        handle = NULL;
+    // register accessory
+    res = register_accessory(ioBuffer);
+    if ( res < 0 )
+    {
         return -2;
-    }
-    sleep(2);
-    if(handle != NULL){
-        libusb_close(handle);
-        handle = NULL;
     }
 
     // Wait a moment
@@ -161,98 +148,14 @@ int AOA::connect(int retry)
         return -3;
     }
 
-    printf("Established AOA connection.\n");
+    printf("Established android_open_accessory connection.\n");
     return 0;
 }
 
 
 // **************************************************************************************************************** //
 /**
- * read() - read data from accessory device
- *
- * argument:
- *         buf     : data buffer
- *         len     : data length
- *         timeout : wait time(ms)
- *
- * return:
- *       <0 : Error (libusb_bulk_transfer error code)
- *       >=0 : Succes(received bytes)
- */
-int AOA::read(unsigned char *buf, int len, unsigned int timeout)
-{
-   int xferred;
-   int res = libusb_bulk_transfer(handle, inEP, buf, len, &xferred, timeout);
-   if(res == 0) res = xferred;
-   return(res);
-}
-
-// **************************************************************************************************************** //
-/**
- * handle_async() - read async data from accessory device
- *
- * argument:
- *         callback: callback function.
- *         buffer: Buffer content data for read
- *         bufferLen: Length of data buffer
- *         userData: User data to pass to callback function
- *         timeOut: Timeout for the transfer in milliseconds
- *
- *         void function(struct libusb_transfer *transfer)
- *
- * return:
- *       <0 : LIBUSB_ERROR_NO_DEVICE if the device has been disconnected and a LIBUSB_ERROR code on other failure.
- *       =0 : Succes
- */
-int AOA::read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut)
-{
-   libusb_fill_bulk_transfer(inTransfer, handle, inEP, // EP_RESPONSE,
-         (uint8_t*)buffer, bufferLen,callback, userData, timeOut);
-   inTransfer->type = LIBUSB_TRANSFER_TYPE_BULK;
-   int result = libusb_submit_transfer(inTransfer);
-   return result;
-}
-
-// **************************************************************************************************************** //
-/**
- * handle_async() - read async data from accessory device
- *
- * argument:
- *         tv : timeout value.
- *
- * return:
- *       <0 : ERROR
- *       =0 : Succes
- */
-int AOA::handle_async(struct timeval* tv) {
-   return libusb_handle_events_timeout(contex, tv);
-} 
-
-
-// **************************************************************************************************************** //
-/**
- * write() - write data to accessory device
- *
- * argument:
- *         *buf    : data buffer
- *         len     : data length
- *         timeout : wait time(ms)
- *
- * return:
- *       <0 : Error (libusb_bulk_transfer error code)
- *       >=0 : Succes(received bytes)
- */
-int AOA::write(unsigned char *buf, int len, unsigned int timeout)
-{
-   int xferred;
-   int res = libusb_bulk_transfer(handle, 2, buf, len, &xferred, timeout);
-   if(res == 0) res = xferred;
-   return(res);
-}
-
-// **************************************************************************************************************** //
-/**
- * get_protocol() - retrieve AOA protocol version
+ * get_protocol() - retrieve android_open_accessory protocol version
  *
  * argument:
  *         none
@@ -261,7 +164,7 @@ int AOA::write(unsigned char *buf, int len, unsigned int timeout)
  *       -1 : Error (libusb_bulk_transfer error code)
  *       >0 : Protocol version
  */
-int AOA::get_protocol()
+int android_open_accessory::get_protocol()
 {
     unsigned short protocol;
     unsigned char buf[2];
@@ -275,28 +178,10 @@ int AOA::get_protocol()
     return((int)protocol);
 }
 
-// **************************************************************************************************************** //
-/**
- * send_string() - send accessory identifications
- *
- * argument:
- *         index   : string ID
- *         str     : identification string(zero terminated UTF8 string)
- *
- * return:
- *       <0 : Error (libusb_bulk_transfer error code)
- *       0 : Success
- */
-int AOA::send_string(int index, const char *str)
-{
-    int res;
-    res = libusb_control_transfer(handle, 0x40 , ACCESSORY_SEND_STRING, 0, index, (unsigned char*)str, strlen(str) + 1, 2000);
-    return(res);
-}
 
 // **************************************************************************************************************** //
 /**
- * search_device() -  Search for AOA support device in the all USB devices
+ * search_device() -  Search for android_open_accessory support device in the all USB devices
  *
  * argument:
  *         contex      : libusb_context
@@ -304,10 +189,10 @@ int AOA::send_string(int index, const char *str)
  *         idProduc : return buffer for USB Product ID
  *
  * return:
- *       -1 : AOA device not found
- *       0> : AOA Version
+ *       -1 : android_open_accessory device not found
+ *       0> : android_open_accessory Version
  */
-int AOA::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct)
+int android_open_accessory::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct)
 {
     int res;
     int i;
@@ -336,7 +221,7 @@ int AOA::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProd
             continue;
         }
 
-        //Already AOA mode ?
+        //Already android_open_accessory mode ?
         if(desc.idVendor == USB_ACCESSORY_VENDOR_ID &&
             (desc.idProduct >= USB_ACCESSORY_PRODUCT_ID &&
              desc.idProduct <= USB_ACCESSORY_AUDIO_ADB_PRODUCT_ID)
@@ -348,7 +233,7 @@ int AOA::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProd
             break;
         }
 
-        //Checking the AOA capability.
+        //Checking the android_open_accessory capability.
         if((handle = libusb_open_device_with_vid_pid(ctx, desc.idVendor,  desc.idProduct)) == NULL) {
                printf("Device open error.\n");
         } else {
@@ -359,9 +244,9 @@ int AOA::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProd
                 handle = NULL;
                 if( res != -1 ){
 #ifdef DEBUG
-    printf("AOA protocol version: %d\n", verProtocol);
+    printf("android_open_accessory protocol version: %d\n", verProtocol);
 #endif
-                    break; //AOA found.
+                    break; //android_open_accessory found.
                 }
         }
     }
@@ -379,6 +264,7 @@ int AOA::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProd
     return res;
 }
 
+
 // **************************************************************************************************************** //
 /**
  * find_end_Point() -  find end point number
@@ -390,7 +276,7 @@ int AOA::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProd
  *       0 : Success
  *       -1 : Valid end point not found
  */
-int AOA::find_end_Point(libusb_device *dev)
+int android_open_accessory::find_end_Point(libusb_device *dev)
 {
     struct libusb_config_descriptor *config;
     libusb_get_config_descriptor (dev, 0, &config);
@@ -429,4 +315,84 @@ int AOA::find_end_Point(libusb_device *dev)
         return 0;
     }
 }
+
+
+// **************************************************************************************************************** //
+/**
+ * register_accessory() - register to USB Accessory Mode.
+ *
+ * argument:
+ *         none
+ *
+ * return:
+ *       <0 : Error occur when switched
+ *       >0 : Switched to Accessory mode success
+ */
+int android_open_accessory::register_accessory(unsigned char ioBuffer[2])
+{
+    int response;
+    // Create register
+    libusb_control_transfer(handle,0xC0,51,0,0,ioBuffer,2,2000);
+
+    // Send accessory identifications
+    send_string(ACCESSORY_STRING_MANUFACTURER, (char *) manufacturer);
+    send_string(ACCESSORY_STRING_MODEL, (char *) model);
+    send_string(ACCESSORY_STRING_DESCRIPTION, (char *) description);
+    send_string(ACCESSORY_STRING_VERSION, (char *) version);
+    send_string(ACCESSORY_STRING_URI, (char *) uri);
+    send_string(ACCESSORY_STRING_SERIAL, (char *) serial);
+
+    // Switch to accessory mode
+    response = libusb_control_transfer(handle,0x40,ACCESSORY_START,0,0,ioBuffer,0,2000);
+    if(response < 0){
+        libusb_close(handle);
+        printf("bad request");
+        handle = NULL;
+        return -1;
+    }
+    sleep(2);
+    if(handle != NULL){
+        libusb_close(handle);
+        handle = NULL;
+    }
+
+    return response;
+}
+
+
+// **************************************************************************************************************** //
+/**
+ * unregister_accessory() - retrieve android_open_accessory protocol version
+ *
+ * argument:
+ *         handle: libusb_device_handle struct
+ *
+ * return:
+ *       null
+ *
+ */
+void android_open_accessory::unregister_accessory(libusb_device_handle *handle)
+{
+    libusb_release_interface(handle,0);
+    sleep(1);
+}
+
+
+// **************************************************************************************************************** //
+/**
+ * hid_register() - connect to android_open_accessory device
+ *
+ * argument:
+ *         ss
+ *
+ * return:
+ *       0
+ */
+int android_open_accessory::hid_register(unsigned char data[WEIGH_REPORT_SIZE])
+{
+    libusb_control_transfer(handle, LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS | \
+    LIBUSB_RECIPIENT_INTERFACE | LIBUSB_CAP_HAS_HID_ACCESS , WEIGH_REPORT_SIZE, 0x0100,\
+    0x00, data, WEIGH_REPORT_SIZE, 20000);
+}
+
 

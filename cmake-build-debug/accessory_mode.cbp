@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6"/>
 	<Project>
-		<Option title="Accessory"/>
+		<Option title="accessory_mode"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="clang"/>
 		<Option virtualFolders="CMake Files\;"/>
@@ -12,16 +12,6 @@
 				<Option type="4"/>
 				<MakeCommands>
 					<Build command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="edit_cache">
-				<Option working_dir="/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
 					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -37,29 +27,18 @@
 					<DistClean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="Accessory">
-				<Option output="/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Accessory" prefix_auto="0" extension_auto="0"/>
+			<Target title="edit_cache">
 				<Option working_dir="/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="clang"/>
-				<Compiler>
-					<Add directory="/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../include/c++/10.1.0"/>
-					<Add directory="/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../include/c++/10.1.0/x86_64-pc-linux-gnu"/>
-					<Add directory="/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../include/c++/10.1.0/backward"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/clang/10.0.1/include"/>
-					<Add directory="/usr/include"/>
-				</Compiler>
+				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 Accessory"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
 					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="Accessory/fast">
-				<Option output="/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Accessory" prefix_auto="0" extension_auto="0"/>
+			<Target title="go_accessory_mode">
+				<Option output="/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/go_accessory_mode" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -73,7 +52,28 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 Accessory/fast"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 go_accessory_mode"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="go_accessory_mode/fast">
+				<Option output="/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/go_accessory_mode" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../include/c++/10.1.0"/>
+					<Add directory="/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../include/c++/10.1.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../include/c++/10.1.0/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 go_accessory_mode/fast"/>
 					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j4 -f &quot;/home/amirmasoud/CLionProjects/usb_accessory/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -81,19 +81,19 @@
 			</Target>
 		</Build>
 		<Unit filename="/home/amirmasoud/CLionProjects/usb_accessory/accessory_mode.cpp">
-			<Option target="Accessory"/>
+			<Option target="go_accessory_mode"/>
 		</Unit>
 		<Unit filename="/home/amirmasoud/CLionProjects/usb_accessory/include/android_open_accessory.cpp">
-			<Option target="Accessory"/>
+			<Option target="go_accessory_mode"/>
 		</Unit>
 		<Unit filename="/home/amirmasoud/CLionProjects/usb_accessory/include/android_open_accessory.h">
-			<Option target="Accessory"/>
+			<Option target="go_accessory_mode"/>
 		</Unit>
 		<Unit filename="/home/amirmasoud/CLionProjects/usb_accessory/include/android_transporter.cpp">
-			<Option target="Accessory"/>
+			<Option target="go_accessory_mode"/>
 		</Unit>
 		<Unit filename="/home/amirmasoud/CLionProjects/usb_accessory/include/android_transporter.h">
-			<Option target="Accessory"/>
+			<Option target="go_accessory_mode"/>
 		</Unit>
 		<Unit filename="/home/amirmasoud/CLionProjects/usb_accessory/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

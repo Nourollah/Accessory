@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
-project(Accessory)
+project(accessory_mode)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Accessory AdkEcho.cpp AOA/AOA.cpp AOA/AOA.h)
+add_executable(go_accessory_mode accessory_mode.cpp include/android_open_accessory.cpp include/android_open_accessory.h include/android_transporter.cpp include/android_transporter.h)
 
-target_link_libraries(Accessory  usb-1.0 pthread z)
+target_link_libraries(go_accessory_mode  usb-1.0 pthread z)

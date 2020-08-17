@@ -2,7 +2,8 @@
 /**
  * Android USB connection sample.
  */
-#include "AOA/AOA.h"
+#include "include/android_open_accessory.h"
+#include "include/android_transporter.h"
 
 #include <stdlib.h>
 #include <fcntl.h>
@@ -17,15 +18,21 @@
 /**
  * USB Connector opend.
  */
-AOA acc
+android_open_accessory openAccessory
 (
-    "Faradid, Inc.",                        // manufacturer
-    "DemoKit",                                   // model
-    "UsbAccessorySample for ADK",             // description
-    "2.0",                                      // version
-    "https://github.com/mapyo/UsbAccessorySample", // url
-    "000000000000001"
+    "Faradid, Inc.",                             // manufacturer
+         "DemoKit",                                   // model
+      "UsbAccessorySample for ADK",               // description
+        "2.0",                                       // version
+           "http://www.faradid-co.com", // url
+         "000000000000001"
 );
+
+// **************************************************************************************************************** //
+/**
+ * USB Connector transport.
+ */
+android_transporter transporter;
 
 
 // **************************************************************************************************************** //
@@ -41,7 +48,7 @@ AOA acc
 void signal_callback_handler(int signum)
 {
     fprintf(stderr, "\ninterrupt %d\n",signum);
-    acc.disconnect();
+    openAccessory.disconnect();
     exit(0);
 }
 
@@ -60,7 +67,7 @@ void signal_callback_handler(int signum)
 static void error(char *msg, int rc)
 {
 	fprintf(stderr,"Error(%d,%s): %s\n",rc,strerror(errno),msg);
-	acc.disconnect();
+	openAccessory.disconnect();
 	exit(0);
 }
 
@@ -81,17 +88,17 @@ int main(int argc, char *argv[])
 
 	unsigned char buff[1024];
 
-	acc.connect(100);
+	openAccessory.connect(100);
 
 
     // Echo back.
     while (1) {
-        int len = acc.read(buff, sizeof(buff), 1000000);
-        if (len < 0) error((char*)"acc.read",len);
+        int len = transporter.read(buff, sizeof(buff), 1000000);
+        if (len < 0) error((char*)"openAccessory.read",len);
         buff[len+1] = '\0';
         printf("USB>%s\n", buff);
         // for (int i=0; i<len; i++) buff[i] = buff[i] - 0x20;
-        acc.write(buff, len, 1000);
+        transporter.write(buff, len, 1000);
     }
 
 }
