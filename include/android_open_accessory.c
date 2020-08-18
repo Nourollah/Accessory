@@ -1,36 +1,14 @@
 #include "android_open_accessory.h"
 
-#ifdef CLANG
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h>
-#include <pthread.h>
-
-#else
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <pthread.h>
-
-#endif
-
-
-
-android_open_accessory::android_open_accessory
-(const char *manufacturer, const char *model, const char *description, const char *version, const char *uri, const char *serial):
- manufacturer(manufacturer), model(model), description(description), version(version), uri(uri), serial(serial), handle(NULL), contex(NULL)
+void android_open_accessory(const char *manufacturer, const char *model, const char *description, const char *version, const char *uri, const char *serial)
 {
     inTransfer = libusb_alloc_transfer(0);
 }
 
 
-android_open_accessory::~android_open_accessory()
+void android_close_accessory()
 {
-    this->disconnect();
+    disconnect();
     if( inTransfer != NULL )
     {
        libusb_free_transfer(inTransfer);
@@ -38,16 +16,16 @@ android_open_accessory::~android_open_accessory()
 }
 
 
-void android_open_accessory::disconnect()
+void disconnect()
 {
     if(handle != NULL ){
         libusb_release_interface (handle, 0);
         libusb_close(handle);
 	handle = NULL;
     }
-    if(contex != NULL ){
-       libusb_exit(contex);
-        contex = NULL;
+    if(context != NULL ){
+       libusb_exit(context);
+        context = NULL;
     }
 }
 
@@ -64,9 +42,10 @@ void android_open_accessory::disconnect()
  *       -2 : connection failed.(usb_accessory mode switch failed)
  *       -3 : connection failed.(libusb_claim_interface failed)
  */
-int android_open_accessory::connect(int retry)
+int connect(int retry)
 {
-    if(libusb_init(&contex) < 0){
+    inTransfer = libusb_alloc_transfer(0);
+    if(libusb_init(&context) < 0){
        printf("libusb_init failed\n");
        return 1;
     }
@@ -77,20 +56,20 @@ int android_open_accessory::connect(int retry)
     uint16_t idVendor, idProduct;
 
     // Search for android_open_accessory support device in the all USB devices
-    if ((protocol= search_device(contex, &idVendor, &idProduct)) < 0) {
+    if ((protocol= search_device(context, &idVendor, &idProduct)) < 0) {
         printf("android_open_accessory device not found.\n");
         return -1;
     }
 
     // Already in accessory mode ?
     if( protocol == 0 ) {
-       handle = libusb_open_device_with_vid_pid(contex, idVendor, idProduct);
+       handle = libusb_open_device_with_vid_pid(context, idVendor, idProduct);
        libusb_claim_interface(handle, 0);
        return 0;
     }
     verProtocol = protocol;
 
-    handle = libusb_open_device_with_vid_pid(contex, idVendor, idProduct);
+    handle = libusb_open_device_with_vid_pid(context, idVendor, idProduct);
     libusb_claim_interface(handle, 0);
     usleep(2000);//sometimes hangs on the next transfer :(
 
@@ -108,11 +87,11 @@ int android_open_accessory::connect(int retry)
     // Attempt to connect to new PID, if that doesn't work try ACCESSORY_PID_ALT
     for(;;){
         tries--;
-        if(search_device(contex, &idVendor, &idProduct) != 0 ){
+        if(search_device(context, &idVendor, &idProduct) != 0 ){
             sleep(1);
             continue;
         }
-        if((handle = libusb_open_device_with_vid_pid(contex, idVendor, idProduct)) == NULL){
+        if((handle = libusb_open_device_with_vid_pid(context, idVendor, idProduct)) == NULL){
             if(tries < 0){
                 return -1;
             }
@@ -143,7 +122,7 @@ int android_open_accessory::connect(int retry)
  *       -1 : Error (libusb_bulk_transfer error code)
  *       >0 : Protocol version
  */
-int android_open_accessory::get_protocol()
+int get_protocol()
 {
     unsigned short protocol;
     unsigned char buf[2];
@@ -163,7 +142,7 @@ int android_open_accessory::get_protocol()
  * search_device() -  Search for android_open_accessory support device in the all USB devices
  *
  * argument:
- *         contex      : libusb_context
+ *         contextOpen      : libusb_context
  *         idVendor : return buffer for USB Vendor ID
  *         idProduc : return buffer for USB Product ID
  *
@@ -171,7 +150,7 @@ int android_open_accessory::get_protocol()
  *       -1 : android_open_accessory device not found
  *       0> : android_open_accessory Version
  */
-int android_open_accessory::search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct)
+int search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct)
 {
     int res;
     int i;
@@ -255,7 +234,7 @@ int android_open_accessory::search_device(libusb_context *ctx, uint16_t *idVendo
  *       0 : Success
  *       -1 : Valid end point not found
  */
-int android_open_accessory::find_end_Point(libusb_device *dev)
+int find_end_Point(libusb_device *dev)
 {
     struct libusb_config_descriptor *config;
     libusb_get_config_descriptor (dev, 0, &config);
@@ -307,19 +286,19 @@ int android_open_accessory::find_end_Point(libusb_device *dev)
  *       <0 : Error occur when switched
  *       >0 : Switched to Accessory mode success
  */
-int android_open_accessory::register_accessory(unsigned char ioBuffer[2])
+int register_accessory(unsigned char ioBuffer[2])
 {
     int response;
     // Create register
     libusb_control_transfer(handle,0xC0,51,0,0,ioBuffer,2,2000);
 
     // Send accessory identifications
-    send_string(ACCESSORY_STRING_MANUFACTURER, (char *) manufacturer);
-    send_string(ACCESSORY_STRING_MODEL, (char *) model);
-    send_string(ACCESSORY_STRING_DESCRIPTION, (char *) description);
-    send_string(ACCESSORY_STRING_VERSION, (char *) version);
-    send_string(ACCESSORY_STRING_URI, (char *) uri);
-    send_string(ACCESSORY_STRING_SERIAL, (char *) serial);
+    send_string(ACCESSORY_STRING_MANUFACTURER, (char *) "Faradid, Inc.");
+    send_string(ACCESSORY_STRING_MODEL, (char *) "DemoKit");
+    send_string(ACCESSORY_STRING_DESCRIPTION, (char *) "UsbAccessorySample for ADK");
+    send_string(ACCESSORY_STRING_VERSION, (char *) "2.0");
+    send_string(ACCESSORY_STRING_URI, (char *) "http://www.faradid-co.com");
+    send_string(ACCESSORY_STRING_SERIAL, (char *) "000000000000001");
 
     // Switch to accessory mode
     response = libusb_control_transfer(handle,0x40,ACCESSORY_START,0,0,ioBuffer,0,2000);
@@ -350,7 +329,7 @@ int android_open_accessory::register_accessory(unsigned char ioBuffer[2])
  *       null
  *
  */
-void android_open_accessory::unregister_accessory(libusb_device_handle *handle)
+void unregister_accessory(libusb_device_handle *handle)
 {
     libusb_release_interface(handle,0);
     sleep(1);
@@ -367,7 +346,7 @@ void android_open_accessory::unregister_accessory(libusb_device_handle *handle)
  * return:
  *       0
  */
-int android_open_accessory::hid_register(unsigned char data[WEIGH_REPORT_SIZE])
+int hid_register(unsigned char data[WEIGH_REPORT_SIZE])
 {
     libusb_control_transfer(handle, LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS /* | LIBUSB_RECIPIENT_INTERFACE | LIBUSB_CAP_HAS_HID_ACCESS*/ , WEIGH_REPORT_SIZE, 0x0100,\
     0x00, data, WEIGH_REPORT_SIZE, 2000);
@@ -377,21 +356,9 @@ int android_open_accessory::hid_register(unsigned char data[WEIGH_REPORT_SIZE])
 
 // **************************************************************************************************************** //
 /**
- * r_quit() -  Change r_mQuiting value to true for give ending to r_loop or thread;
- */
-void android_open_accessory::r_quit()
-{
-    r_mQuiting = true;
-}
-
-
-// **************************************************************************************************************** //
-
-
-/**
  * r_run() -  Read Async data from USB Accessory.
  */
-void android_open_accessory::r_run()
+void r_run()
 {
     pthread_t runner;
     int pthreadRun;
@@ -412,13 +379,13 @@ void android_open_accessory::r_run()
 /**
  * w_run() -  Write Async data over USB Accessory.
  */
-void android_open_accessory::w_run()
+void w_run()
 {
     pthread_t runner;
     int pthreadRun;
 
     // Separate read data thread from main thread
-    pthreadRun = pthread_create(&runner, NULL , &w_loop(), NULL);
+    pthreadRun = pthread_create(&runner, NULL , &w_loop, NULL);
 
     (pthreadRun>0)? pthread_join(runner, NULL): printf("\nCreate read thread unsuccessfully\n");
     pthread_exit(NULL);
@@ -432,13 +399,14 @@ void android_open_accessory::w_run()
 /**
  * r_loop() -  Read Async data from USB Accessory
  */
-void * r_loop(void *)
+void *r_loop(void *unused)
 {
+    volatile bool flag;
+
     unsigned char *buffer;
     int length;
     void* userData;
-    void *unused;
-    while (!r_mQuiting)
+    while (!flag)
     {
         if (buffer == NULL)
         {
@@ -450,16 +418,12 @@ void * r_loop(void *)
             buffer = (unsigned char*)malloc(length);
         }
 
-        try
+        if(!(io_async_read(cbTransfer, buffer, length, userData, 2000)))
         {
-            io_aread(cbTransfer, buffer, length, userData, 2000);
-        }
-        catch (int error)
-        {
-            printf("\nAsync Read buffer unsuccessfully. %d", error);
+            printf("\nAsync Read buffer unsuccessfully. ");
         }
     }
-
+    return unused;
 }
 
 
@@ -467,7 +431,7 @@ void * r_loop(void *)
 /**
  * w_loop() -  Write Async string data over USB Accessory
  */
-void w_loop()
+void *w_loop(void *unused)
 {
     volatile bool flag;
 
@@ -478,33 +442,29 @@ void w_loop()
 
     while (!flag)
     {
-        try {
-            if (buffer == NULL)
-            {
-                buffer = (unsigned char*)malloc(length);
-            }
-            else
-            {
-                free(buffer);
-                buffer = (unsigned char*)malloc(length);
-            }
-        }
-        catch (int error)
+
+        if (buffer == NULL)
         {
-            printf("Can't allocate correct buffer. error: %d",error);
+            buffer = (unsigned char*)malloc(length);
+        }
+        else
+        {
+            free(buffer);
+            buffer = (unsigned char*)malloc(length);
+        }
+
+        if (buffer == NULL)
+        {
+            printf("Can't allocate correct buffer. error: ");
             flag = true;
         }
 
-        try
+
+        if(!(io_async_write(cbTransfer, buffer, length, userData, 2000)))
         {
-            io_awrite(cbTransfer, buffer, length, userData, 2000);
-        }
-        catch (int error)
-        {
-            printf("\nAsync Write buffer unsuccessfully. %d", error);
+            printf("\nAsync Write buffer unsuccessfully. ");
             flag = true;
         }
     }
-
-    if ();
+    return unused;
 }

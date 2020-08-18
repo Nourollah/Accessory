@@ -3,10 +3,17 @@
  * Android Open usb_accessory connection implementation for libusb-1.0
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include <syslog.h>
+
+#include "android_transporter.h"
+
 #ifndef ANDROID_OPEN_ACCESSORY_H
 #define ANDROID_OPEN_ACCESSORY_H
 #define GCC
-#include "android_transporter.h"
 
 #define USB_ACCESSORY_VENDOR_ID             0x18D1
 //AOA1.0 Specific
@@ -47,48 +54,34 @@
 /**
  * This class presentation function to get USB usb_accessory mode on Android, read and write stream over USB
  */
-class android_open_accessory : public android_transporter
-{
-private:
-    const char *manufacturer;
-    const char *model;
-    const char *description;
-    const char *version;
-    const char *uri;
-    const char *serial;
 
-    libusb_context *contex;
-    struct libusb_device_handle* handle;
-    uint8_t inEP;
-    uint8_t outEP;
-    int verProtocol;
+const char *manufacturer;
+const char *model;
+const char *description;
+const char *version;
+const char *uri;
+const char *serial;
 
-    volatile bool r_mQuiting;
-
-    libusb_transfer* inTransfer;
-
-    int search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct);
-    int find_end_Point(libusb_device *dev);
-    int get_protocol();
+libusb_transfer_cb_fn cbTransfer;
 
 
-public:
 
-    android_open_accessory
-    (const char *manufacturer, const char *model, const char *description, const char *version, const char *uri, const char *serial);
-
-    ~android_open_accessory();
-    int connect(int);
-    void disconnect();
-    int register_accessory(unsigned char ioBuffer[2]);
-    void unregister_accessory(libusb_device_handle *handle);
-    int hid_register(unsigned char data[7]); //human interface device
-    int hid_unregister();
-    int send_touch();
-    void r_run();
-    void w_run();
-
-};
+int search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct);
+int find_end_Point(libusb_device *dev);
+int get_protocol();
+void android_open_accessory(const char *manufacturer, const char *model, const char *description, const char *version, const char *uri, const char *serial);
+void android_close_accessory();
+int connect(int);
+void disconnect();
+int register_accessory(unsigned char ioBuffer[2]);
+void unregister_accessory(libusb_device_handle *handle);
+int hid_register(unsigned char data[7]); //human interface device
+int hid_unregister();
+int send_touch();
+void r_run();
+void w_run();
+void *r_loop();
+void *w_loop();
 
 
 #endif /* ANDROID_OPEN_ACCESSORY_H */

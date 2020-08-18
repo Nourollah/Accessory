@@ -17,8 +17,13 @@
   <component name="ChangeListManager">
     <list default="true" id="faa45f09-468c-4e2a-b354-0ddcfed58714" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/android_open_accessory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/android_open_accessory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accessory_mode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/accessory_mode.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/accessory_mode.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/accessory_mode.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/android_open_accessory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/android_open_accessory.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/android_open_accessory.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/android_open_accessory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/android_transporter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/android_transporter.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/android_transporter.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/android_transporter.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +59,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -89,7 +94,7 @@
       <workItem from="1597647732449" duration="8227000" />
       <workItem from="1597656125229" duration="4074000" />
       <workItem from="1597661173473" duration="8785000" />
-      <workItem from="1597723934455" duration="27433000" />
+      <workItem from="1597723934455" duration="32902000" />
     </task>
     <task id="LOCAL-00001" summary="Init Commit">
       <created>1597560006255</created>
@@ -154,7 +159,14 @@
       <option name="project" value="LOCAL" />
       <updated>1597749669093</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Before convert to function">
+      <created>1597754524700</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1597754524701</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -182,7 +194,8 @@
     <MESSAGE value="Added transporter class" />
     <MESSAGE value="Added pthread to transporter class" />
     <MESSAGE value="Added ThreadBased Functions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added ThreadBased Functions" />
+    <MESSAGE value="Before convert to function" />
+    <option name="LAST_COMMIT_MESSAGE" value="Before convert to function" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2339" y="216" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597577420573">
@@ -193,50 +206,54 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state width="442" height="506" key="DebuggerActiveHint/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597565091638" />
-    <state width="1874" height="341" key="GridCell.Tab.0.bottom" timestamp="1597584227640">
+    <state x="607" y="357" key="FileChooserDialogImpl" timestamp="1597755986116">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state x="607" y="357" key="FileChooserDialogImpl/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597755986116" />
+    <state width="1874" height="276" key="GridCell.Tab.0.bottom" timestamp="1597758877780">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597584227640" />
-    <state width="1874" height="341" key="GridCell.Tab.0.center" timestamp="1597584227640">
+    <state width="1874" height="276" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597758877780" />
+    <state width="1874" height="276" key="GridCell.Tab.0.center" timestamp="1597758877780">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.0.center/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597584227640" />
-    <state width="1874" height="341" key="GridCell.Tab.0.left" timestamp="1597584227640">
+    <state width="1874" height="276" key="GridCell.Tab.0.center/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597758877780" />
+    <state width="1874" height="276" key="GridCell.Tab.0.left" timestamp="1597758877780">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.0.left/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597584227640" />
-    <state width="1874" height="341" key="GridCell.Tab.0.right" timestamp="1597584227640">
+    <state width="1874" height="276" key="GridCell.Tab.0.left/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597758877780" />
+    <state width="1874" height="276" key="GridCell.Tab.0.right" timestamp="1597758877780">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.0.right/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597584227640" />
-    <state width="1874" height="341" key="GridCell.Tab.1.bottom" timestamp="1597584227640">
+    <state width="1874" height="276" key="GridCell.Tab.0.right/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597758877780" />
+    <state width="1874" height="341" key="GridCell.Tab.1.bottom" timestamp="1597758869537">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597584227640" />
-    <state width="1874" height="341" key="GridCell.Tab.1.center" timestamp="1597584227640">
+    <state width="1874" height="341" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597758869537" />
+    <state width="1874" height="341" key="GridCell.Tab.1.center" timestamp="1597758869537">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.1.center/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597584227640" />
-    <state width="1874" height="341" key="GridCell.Tab.1.left" timestamp="1597584227640">
+    <state width="1874" height="341" key="GridCell.Tab.1.center/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597758869537" />
+    <state width="1874" height="341" key="GridCell.Tab.1.left" timestamp="1597758869537">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.1.left/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597584227640" />
-    <state width="1874" height="341" key="GridCell.Tab.1.right" timestamp="1597584227640">
+    <state width="1874" height="341" key="GridCell.Tab.1.left/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597758869537" />
+    <state width="1874" height="341" key="GridCell.Tab.1.right" timestamp="1597758869537">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state width="1874" height="341" key="GridCell.Tab.1.right/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597584227640" />
+    <state width="1874" height="341" key="GridCell.Tab.1.right/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597758869537" />
     <state x="2661" y="241" key="RollbackChangesDialog" timestamp="1597577384838">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2661" y="241" key="RollbackChangesDialog/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597577384838" />
-    <state x="752" y="197" width="1007" height="732" key="SettingsEditor" timestamp="1597752429795">
+    <state x="752" y="197" width="1007" height="732" key="SettingsEditor" timestamp="1597756055179">
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
-    <state x="752" y="197" width="1007" height="732" key="SettingsEditor/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597752429795" />
-    <state x="2476" y="294" key="Vcs.Push.Dialog.v2" timestamp="1597580488205">
+    <state x="752" y="197" width="1007" height="732" key="SettingsEditor/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597756055179" />
+    <state x="2476" y="294" key="Vcs.Push.Dialog.v2" timestamp="1597754551679">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2476" y="294" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597580488205" />
+    <state x="2476" y="294" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/0.38.1920.1042@1920.0.1920.1080" timestamp="1597754551679" />
     <state x="2491" y="171" width="416" height="723" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1597644625342">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
@@ -266,9 +283,59 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/android_open_accessory.cpp</url>
-          <line>4</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>46</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>292</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>302</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>315</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_transporter.c</url>
+          <line>105</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>295</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>296</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>297</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>298</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>299</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/android_open_accessory.c</url>
+          <line>301</line>
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

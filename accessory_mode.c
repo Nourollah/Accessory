@@ -1,22 +1,8 @@
 // **************************************************************************************************************** //
-/**
- * Android USB connection sample.
- */
+
+
 #include "include/android_open_accessory.h"
 #include "include/android_transporter.h"
-
-#ifdef CLANG
-
-#include <cstdlib>
-#include <fcntl.h>
-#include <cerrno>
-#include <unistd.h>
-#include <cstdio>
-#include <csignal>
-#include <cstring>
-#include <pthread.h>
-
-#else
 
 #include <stdlib.h>
 #include <fcntl.h>
@@ -27,20 +13,11 @@
 #include <string.h>
 #include <pthread.h>
 
-#endif
 // **************************************************************************************************************** //
-/**
- * USB Connector opend.
- */
-android_open_accessory openAccessory
-(
-    "Faradid, Inc.",                             // manufacturer
-         "DemoKit",                                   // model
-      "UsbAccessorySample for ADK",               // description
-        "2.0",                                       // version
-           "http://www.faradid-co.com", // url
-         "000000000000001"
-);
+
+/*
+android_open_accessory("Faradid, Inc.", "DemoKit", "UsbAccessorySample for ADK", "2.0", "http://www.faradid-co.com", "000000000000001");
+*/
 
 
 // **************************************************************************************************************** //
@@ -52,11 +29,14 @@ android_open_accessory openAccessory
  *
  * return:
  *       null
+ *
  */
+
+
 void signal_callback_handler(int signum)
 {
     fprintf(stderr, "\ninterrupt %d\n",signum);
-    openAccessory.disconnect();
+    disconnect();
     exit(0);
 }
 
@@ -71,11 +51,13 @@ void signal_callback_handler(int signum)
  *
  * return:
  *       null
- */
+*/
+
+
 static void error(char *msg, int rc)
 {
 	fprintf(stderr,"Error(%d,%s): %s\n",rc,strerror(errno),msg);
-	openAccessory.disconnect();
+    disconnect();
 	exit(0);
 }
 
@@ -88,30 +70,27 @@ static void error(char *msg, int rc)
  *
  *
  * return:
- */
+*/
+
+
 int main(int argc, char *argv[])
 {
     signal(SIGINT, signal_callback_handler);
     signal(SIGTERM, signal_callback_handler);
 
-    pthread_t readThread, writeThread;
-    int pt_read, pt_write;
-
-
-
 	unsigned char buff[1024];
-	openAccessory.connect(100);
-	openAccessory.r_run();
+	connect(100);
+	r_run();
 
     // Echo back.
     while (true)
     {
-        int len = openAccessory.io_read(buff, sizeof(buff), 2000);
+        int len = io_read(buff, sizeof(buff), 2000);
         if (len < 0) error((char*)"openAccessory.read",len);
         buff[len+1] = '\0';
         printf("USB>%s\n", buff);
         // for (int i=0; i<len; i++) buff[i] = buff[i] - 0x20;
-        openAccessory.io_write(buff, len, 1000);
+        io_write(buff, len, 1000);
     }
 
 }
