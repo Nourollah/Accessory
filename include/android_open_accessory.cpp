@@ -386,16 +386,8 @@ void android_open_accessory::r_quit()
 
 
 // **************************************************************************************************************** //
-/**
- * r_quit() -  Change w_mQuiting value to true for give ending to r_loop or thread;
- */
-void android_open_accessory::w_quit()
-{
-    w_mQuiting = true;
-}
 
 
-// **************************************************************************************************************** //
 /**
  * r_run() -  Read Async data from USB Accessory.
  */
@@ -406,7 +398,7 @@ void android_open_accessory::r_run()
     void *unused;
 
     // Separate read data thread from main thread
-    pthreadRun = pthread_create(&runner, NULL , &r_loop(), NULL);
+    pthreadRun = pthread_create(&runner, NULL , &r_loop, NULL);
 
     (pthreadRun>0)? pthread_join(runner, NULL): printf("\nCreate read thread unsuccessfully\n");
     pthread_exit(NULL);
@@ -440,49 +432,13 @@ void android_open_accessory::w_run()
 /**
  * r_loop() -  Read Async data from USB Accessory
  */
-void *android_open_accessory::r_loop()
+void * r_loop(void *)
 {
     unsigned char *buffer;
     int length;
     void* userData;
     void *unused;
     while (!r_mQuiting)
-    {
-        if (buffer == NULL)
-        {
-            buffer = (unsigned char*)malloc(length);
-        }
-        else
-            {
-                free(buffer);
-                buffer = (unsigned char*)malloc(length);
-            }
-
-        try
-        {
-            io_aread(cbTransfer, buffer, length, userData, 2000);
-        }
-        catch (int error)
-        {
-            printf("\nAsync Read buffer unsuccessfully. %d", error);
-        }
-    }
-
-    return NULL;
-}
-
-
-// **************************************************************************************************************** //
-/**
- * w_loop() -  Write Async string data over USB Accessory
- */
-void *android_open_accessory::w_loop()
-{
-    unsigned char *buffer;
-    int length;
-    void* userData;
-
-    while (!w_mQuiting)
     {
         if (buffer == NULL)
         {
@@ -496,12 +452,59 @@ void *android_open_accessory::w_loop()
 
         try
         {
+            io_aread(cbTransfer, buffer, length, userData, 2000);
+        }
+        catch (int error)
+        {
+            printf("\nAsync Read buffer unsuccessfully. %d", error);
+        }
+    }
+
+}
+
+
+// **************************************************************************************************************** //
+/**
+ * w_loop() -  Write Async string data over USB Accessory
+ */
+void w_loop()
+{
+    volatile bool flag;
+
+    libusb_transfer_cb_fn cbTransfer;
+    unsigned char *buffer;
+    int length;
+    void* userData;
+
+    while (!flag)
+    {
+        try {
+            if (buffer == NULL)
+            {
+                buffer = (unsigned char*)malloc(length);
+            }
+            else
+            {
+                free(buffer);
+                buffer = (unsigned char*)malloc(length);
+            }
+        }
+        catch (int error)
+        {
+            printf("Can't allocate correct buffer. error: %d",error);
+            flag = true;
+        }
+
+        try
+        {
             io_awrite(cbTransfer, buffer, length, userData, 2000);
         }
         catch (int error)
         {
             printf("\nAsync Write buffer unsuccessfully. %d", error);
+            flag = true;
         }
     }
-    return NULL;
+
+    if ();
 }

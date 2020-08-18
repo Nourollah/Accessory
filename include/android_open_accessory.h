@@ -64,22 +64,16 @@ private:
     int verProtocol;
 
     volatile bool r_mQuiting;
-    volatile bool w_mQuiting;
 
     libusb_transfer* inTransfer;
-    libusb_transfer_cb_fn cbTransfer;
 
     int search_device(libusb_context *ctx, uint16_t *idVendor, uint16_t *idProduct);
     int find_end_Point(libusb_device *dev);
     int get_protocol();
 
-    void *r_loop();
-    void r_quit();
-    void *w_loop();
-    void w_quit();
-
 
 public:
+
     android_open_accessory
     (const char *manufacturer, const char *model, const char *description, const char *version, const char *uri, const char *serial);
 
