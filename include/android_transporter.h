@@ -7,6 +7,9 @@
 #ifndef ACCESSORY_ANDROID_TRANSPORTER_H
 #define ACCESSORY_ANDROID_TRANSPORTER_H
 
+#define GCC
+extern  "C"
+{
 #include <libusb-1.0/libusb.h>
 
 class android_transporter
@@ -19,23 +22,22 @@ private:
     int verProtocol;
     libusb_transfer* inTransfer;
     char versionString[15]; // Bigger than 10, just in case
-    pthread_t readThread;
-    pthread_t writeThread;
-    int ThreadRunner;
+
+
 
 public:
 
     android_transporter();
     ~android_transporter();
 
-    int read(unsigned char *buf, int len, unsigned int timeout, pthread_t readThread);
-    int read_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut, pthread_t readThread);
-    int write(unsigned char *buf, int len, unsigned int timeout, pthread_t writeThread);
-    int write_async(libusb_transfer_cb_fn callback, char* buffer, int bufferLen, void* userData, unsigned int timeOut, pthread_t writeThread);
+    int io_read(unsigned char *buf, int len, unsigned int timeout);
+    int io_aread(libusb_transfer_cb_fn callback, unsigned char* buffer, int bufferLen, void* userData, unsigned int timeOut);
+    int io_write(unsigned char *buf, int len, unsigned int timeout);
+    int io_awrite(libusb_transfer_cb_fn callback, unsigned char* buffer, int bufferLen, void* userData, unsigned int timeOut);
     int handle_async(struct timeval* tv);
     int send_string(int index, const char *str);
 
 };
 
-
+};
 #endif //ACCESSORY_ANDROID_TRANSPORTER_H

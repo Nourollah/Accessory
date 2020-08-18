@@ -5,6 +5,19 @@
 #include "include/android_open_accessory.h"
 #include "include/android_transporter.h"
 
+#ifdef CLANG
+
+#include <cstdlib>
+#include <fcntl.h>
+#include <cerrno>
+#include <unistd.h>
+#include <cstdio>
+#include <csignal>
+#include <cstring>
+#include <pthread.h>
+
+#else
+
 #include <stdlib.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -12,8 +25,9 @@
 #include <stdio.h>
 #include <signal.h>
 #include <string.h>
+#include <pthread.h>
 
-
+#endif
 // **************************************************************************************************************** //
 /**
  * USB Connector opend.
@@ -27,12 +41,6 @@ android_open_accessory openAccessory
            "http://www.faradid-co.com", // url
          "000000000000001"
 );
-
-// **************************************************************************************************************** //
-/**
- * USB Connector transport.
- */
-android_transporter transporter;
 
 
 // **************************************************************************************************************** //
@@ -86,19 +94,24 @@ int main(int argc, char *argv[])
     signal(SIGINT, signal_callback_handler);
     signal(SIGTERM, signal_callback_handler);
 
+    pthread_t readThread, writeThread;
+    int pt_read, pt_write;
+
+
+
 	unsigned char buff[1024];
-
 	openAccessory.connect(100);
-
+	openAccessory.r_run();
 
     // Echo back.
-    while (1) {
-        int len = transporter.read(buff, sizeof(buff), 1000000);
+    while (true)
+    {
+        int len = openAccessory.io_read(buff, sizeof(buff), 2000);
         if (len < 0) error((char*)"openAccessory.read",len);
         buff[len+1] = '\0';
         printf("USB>%s\n", buff);
         // for (int i=0; i<len; i++) buff[i] = buff[i] - 0x20;
-        transporter.write(buff, len, 1000);
+        openAccessory.io_write(buff, len, 1000);
     }
 
 }

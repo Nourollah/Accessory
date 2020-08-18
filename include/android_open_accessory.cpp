@@ -1,44 +1,23 @@
 #include "android_open_accessory.h"
+
+#ifdef CLANG
+
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <pthread.h>
 
+#else
 
-#define USB_ACCESSORY_VENDOR_ID             0x18D1
-//AOA1.0 Specific
-#define USB_ACCESSORY_PRODUCT_ID            0x2D00
-#define USB_ACCESSORY_ADB_PRODUCT_ID        0x2D01
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
 
-//AOA2.0 Specific
-#define USB_AUDIO_PRODUCT_ID                0x2D02
-#define USB_AUDIO_ADB_PRODUCT_ID            0x2D03
-#define USB_ACCESSORY_AUDIO_PRODUCT_ID      0x2D04
-#define USB_ACCESSORY_AUDIO_ADB_PRODUCT_ID  0x2D05
+#endif
 
-#define ACCESSORY_PID                       0x2D01
-#define ACCESSORY_PID_ALT                   0x2D00
-
-#define ACCESSORY_STRING_MANUFACTURER       0
-#define ACCESSORY_STRING_MODEL              1
-#define ACCESSORY_STRING_DESCRIPTION        2
-#define ACCESSORY_STRING_VERSION            3
-#define ACCESSORY_STRING_URI                4
-#define ACCESSORY_STRING_SERIAL             5
-
-#define WEIGH_REPORT_SIZE                   7
-
-
-#define ACCESSORY_GET_PROTOCOL              51
-#define ACCESSORY_SEND_STRING               52
-#define ACCESSORY_START                     53
-
-// for async transfer.
-#define EP_COMMAND    (2 | LIBUSB_ENDPOINT_OUT) // OUT of PC to USB-device //DEVICE_SPECIFIC
-#define EP_RESPONSE   (4 | LIBUSB_ENDPOINT_IN ) // IN  PC from  USB-device //DEVICE_SPECIFIC
-
-#define IN 0x85
-#define OUT 0x07
 
 
 android_open_accessory::android_open_accessory
@@ -390,9 +369,139 @@ void android_open_accessory::unregister_accessory(libusb_device_handle *handle)
  */
 int android_open_accessory::hid_register(unsigned char data[WEIGH_REPORT_SIZE])
 {
-    libusb_control_transfer(handle, LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS | \
-    LIBUSB_RECIPIENT_INTERFACE | LIBUSB_CAP_HAS_HID_ACCESS , WEIGH_REPORT_SIZE, 0x0100,\
-    0x00, data, WEIGH_REPORT_SIZE, 20000);
+    libusb_control_transfer(handle, LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS /* | LIBUSB_RECIPIENT_INTERFACE | LIBUSB_CAP_HAS_HID_ACCESS*/ , WEIGH_REPORT_SIZE, 0x0100,\
+    0x00, data, WEIGH_REPORT_SIZE, 2000);
+    return 0;
 }
 
 
+// **************************************************************************************************************** //
+/**
+ * r_quit() -  Change r_mQuiting value to true for give ending to r_loop or thread;
+ */
+void android_open_accessory::r_quit()
+{
+    r_mQuiting = true;
+}
+
+
+// **************************************************************************************************************** //
+/**
+ * r_quit() -  Change w_mQuiting value to true for give ending to r_loop or thread;
+ */
+void android_open_accessory::w_quit()
+{
+    w_mQuiting = true;
+}
+
+
+// **************************************************************************************************************** //
+/**
+ * r_run() -  Read Async data from USB Accessory.
+ */
+void android_open_accessory::r_run()
+{
+    pthread_t runner;
+    int pthreadRun;
+    void *unused;
+
+    // Separate read data thread from main thread
+    pthreadRun = pthread_create(&runner, NULL , &r_loop(), NULL);
+
+    (pthreadRun>0)? pthread_join(runner, NULL): printf("\nCreate read thread unsuccessfully\n");
+    pthread_exit(NULL);
+
+    // Release stream interface
+    unregister_accessory(handle);
+}
+
+
+// **************************************************************************************************************** //
+/**
+ * w_run() -  Write Async data over USB Accessory.
+ */
+void android_open_accessory::w_run()
+{
+    pthread_t runner;
+    int pthreadRun;
+
+    // Separate read data thread from main thread
+    pthreadRun = pthread_create(&runner, NULL , &w_loop(), NULL);
+
+    (pthreadRun>0)? pthread_join(runner, NULL): printf("\nCreate read thread unsuccessfully\n");
+    pthread_exit(NULL);
+
+    // Release stream interface
+    unregister_accessory(handle);
+}
+
+
+// **************************************************************************************************************** //
+/**
+ * r_loop() -  Read Async data from USB Accessory
+ */
+void *android_open_accessory::r_loop()
+{
+    unsigned char *buffer;
+    int length;
+    void* userData;
+    void *unused;
+    while (!r_mQuiting)
+    {
+        if (buffer == NULL)
+        {
+            buffer = (unsigned char*)malloc(length);
+        }
+        else
+            {
+                free(buffer);
+                buffer = (unsigned char*)malloc(length);
+            }
+
+        try
+        {
+            io_aread(cbTransfer, buffer, length, userData, 2000);
+        }
+        catch (int error)
+        {
+            printf("\nAsync Read buffer unsuccessfully. %d", error);
+        }
+    }
+
+    return NULL;
+}
+
+
+// **************************************************************************************************************** //
+/**
+ * w_loop() -  Write Async string data over USB Accessory
+ */
+void *android_open_accessory::w_loop()
+{
+    unsigned char *buffer;
+    int length;
+    void* userData;
+
+    while (!w_mQuiting)
+    {
+        if (buffer == NULL)
+        {
+            buffer = (unsigned char*)malloc(length);
+        }
+        else
+        {
+            free(buffer);
+            buffer = (unsigned char*)malloc(length);
+        }
+
+        try
+        {
+            io_awrite(cbTransfer, buffer, length, userData, 2000);
+        }
+        catch (int error)
+        {
+            printf("\nAsync Write buffer unsuccessfully. %d", error);
+        }
+    }
+    return NULL;
+}
